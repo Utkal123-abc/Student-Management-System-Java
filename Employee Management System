@@ -1,0 +1,44 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class EmployeeApp {
+    public static void main(String[] args) {
+    
+        String url = "jdbc:mysql://localhost:3306/employee_db";
+        String user = "root";
+        String pass = "root"; 
+        Scanner sc = new Scanner(System.in);
+
+        try (Connection conn = DriverManager.getConnection(url, user, pass)) {
+            while (true) {
+                System.out.println("1. View  2. Exit");
+                int ch = sc.nextInt();
+                sc.nextLine(); 
+                switch (ch) {
+                    case 1:              
+                        Statement stmt = conn.createStatement();
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM employee");
+                        System.out.println("ID | Name | Salary");
+                        System.out.println("----------------");
+                        while (rs.next()) {
+                            int id = rs.getInt("id");
+                            String name = rs.getString("name");
+                            double salary = rs.getDouble("salary");
+
+                            System.out.println(id + " | " + name + " | " + salary);
+                        }
+                        break;
+
+                    case 2:
+                        System.out.println("Exiting...");
+                        return;
+
+                    default:
+                        System.out.println("Invalid. Try again.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
